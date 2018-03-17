@@ -1,0 +1,29 @@
+package cn.itcast.shop.conversion;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.core.convert.converter.Converter;
+
+/**
+ * 日期转换器
+ * @author cqy
+ *
+ */
+public class DateConveter implements Converter<String, Date>{
+
+	public Date convert(String source) {
+		// TODO Auto-generated method stub
+		try {
+			if(null != source){//2016:11-05 11_43-50
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				return df.parse(source);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
+
+}

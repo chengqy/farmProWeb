@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.itcast.shop.mapper.OrderItemMapper" >
+  <resultMap id="BaseResultMap" type="cn.itcast.shop.pojo.OrderItem" >
+    <id column="order_item_id" property="orderItemId" jdbcType="CHAR" />
+    <result column="amount" property="amount" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="DECIMAL" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="pro_id" property="proId" jdbcType="VARCHAR" />
+    <result column="deleted" property="deleted" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    order_item_id, amount, total, order_id, pro_id, deleted, create_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.itcast.shop.pojo.OrderItemExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from order_item
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_item
+    where order_item_id = #{orderItemId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from order_item
+    where order_item_id = #{orderItemId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.itcast.shop.pojo.OrderItemExample" >
+    delete from order_item
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.itcast.shop.pojo.OrderItem" >
+    insert into order_item (order_item_id, amount, total, 
+      order_id, pro_id, deleted, 
+      create_time)
+    values (#{orderItemId,jdbcType=CHAR}, #{amount,jdbcType=INTEGER}, #{total,jdbcType=DECIMAL}, 
+      #{orderId,jdbcType=VARCHAR}, #{proId,jdbcType=VARCHAR}, #{deleted,jdbcType=BIT}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.itcast.shop.pojo.OrderItem" >
+    insert into order_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderItemId != null" >
+        order_item_id,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="deleted != null" >
+        deleted,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderItemId != null" >
+        #{orderItemId,jdbcType=CHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="proId != null" >
+        #{proId,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        #{deleted,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.itcast.shop.pojo.OrderItemExample" resultType="java.lang.Integer" >
+    select count(*) from order_item
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update order_item
+    <set >
+      <if test="record.orderItemId != null" >
+        order_item_id = #{record.orderItemId,jdbcType=CHAR},
+      </if>
+      <if test="record.amount != null" >
+        amount = #{record.amount,jdbcType=INTEGER},
+      </if>
+      <if test="record.total != null" >
+        total = #{record.total,jdbcType=DECIMAL},
+      </if>
+      <if test="record.orderId != null" >
+        order_id = #{record.orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.proId != null" >
+        pro_id = #{record.proId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleted != null" >
+        deleted = #{record.deleted,jdbcType=BIT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update order_item
+    set order_item_id = #{record.orderItemId,jdbcType=CHAR},
+      amount = #{record.amount,jdbcType=INTEGER},
+      total = #{record.total,jdbcType=DECIMAL},
+      order_id = #{record.orderId,jdbcType=VARCHAR},
+      pro_id = #{record.proId,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=BIT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.itcast.shop.pojo.OrderItem" >
+    update order_item
+    <set >
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=DECIMAL},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="proId != null" >
+        pro_id = #{proId,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where order_item_id = #{orderItemId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.itcast.shop.pojo.OrderItem" >
+    update order_item
+    set amount = #{amount,jdbcType=INTEGER},
+      total = #{total,jdbcType=DECIMAL},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      pro_id = #{proId,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where order_item_id = #{orderItemId,jdbcType=CHAR}
+  </update>
+</mapper>
