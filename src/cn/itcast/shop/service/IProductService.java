@@ -50,5 +50,11 @@ public interface IProductService {
 	 */
 	ProInitDto getPagingList(ProPagingParam param);
 
+	void deleted(String[] proIds, String sellerId);
+
+	void changeStatus(String[] proIds, String sellerId, int status);
+
+	ProInitDto getProDetailInfo(String id, String uid) throws Exception;
+
 
 }

@@ -22,4 +22,21 @@ public class MyRandomUtils {
 		return pwd.toString();
 	}
 
+	/**
+	 * 生成num位随机数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static String RandomNumber(int num) {
+		if (num <= 0) {
+			return null;
+		}
+		StringBuilder str=new StringBuilder();
+		for (int i = 0; i < num; i++) {
+			str.append((int) (10 * (Math.random())));
+		}
+		return str.toString();
+	}
+
 }

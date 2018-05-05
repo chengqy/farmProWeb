@@ -54,5 +54,12 @@ public class SellerController {
 		}
 		
 	}
+	@RequestMapping("logout")
+	public String logout(HttpSession session) {
+		if (session.getAttribute("sellerSession") != null) {
+			session.removeAttribute("sellerSession");
+		}
+		return "redirect:/adminjsps/login.jsp";
+	}
 
 }

@@ -6,6 +6,8 @@ import java.util.Date;
 public class Orders {
     private String orderId;
 
+    private String orderNum;
+
     private BigDecimal subTotal;
 
     private Integer state;
@@ -13,6 +15,8 @@ public class Orders {
     private String addressId;
 
     private String uid;
+
+    private String sellerId;
 
     private Boolean deleted;
 
@@ -24,6 +28,14 @@ public class Orders {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId == null ? null : orderId.trim();
+    }
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum == null ? null : orderNum.trim();
     }
 
     public BigDecimal getSubTotal() {
@@ -56,6 +68,14 @@ public class Orders {
 
     public void setUid(String uid) {
         this.uid = uid == null ? null : uid.trim();
+    }
+
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId == null ? null : sellerId.trim();
     }
 
     public Boolean getDeleted() {

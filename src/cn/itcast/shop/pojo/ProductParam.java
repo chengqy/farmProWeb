@@ -30,18 +30,19 @@ public class ProductParam {
 
 	private Boolean deleted;
 
-	private String cateId;
+	private Integer cateId;
 
-	private String cityId;
-//	private String cateName;
-//
-//	private String cityName;
+	private Integer cityId;
+	// private String cateName;
+	//
+	// private String cityName;
 
 	private String sellerId;
 
 	private Date createTime;
 	private Integer status;
-//	private Integer isCollect;
+
+	// private Integer isCollect;
 
 	public String getProId() {
 		return proId;
@@ -131,22 +132,6 @@ public class ProductParam {
 		this.deleted = deleted;
 	}
 
-	public String getCateId() {
-		return cateId;
-	}
-
-	public void setCateId(String cateId) {
-		this.cateId = cateId;
-	}
-
-	public String getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(String cityId) {
-		this.cityId = cityId;
-	}
-
 	public String getSellerId() {
 		return sellerId;
 	}
@@ -157,6 +142,22 @@ public class ProductParam {
 
 	public Date getCreateTime() {
 		return createTime;
+	}
+
+	public Integer getCateId() {
+		return cateId;
+	}
+
+	public void setCateId(Integer cateId) {
+		this.cateId = cateId;
+	}
+
+	public Integer getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
 	}
 
 	public void setCreateTime(Date createTime) {
@@ -210,5 +211,5 @@ public class ProductParam {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	
+
 }

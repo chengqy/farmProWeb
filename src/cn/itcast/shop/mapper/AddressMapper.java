@@ -27,15 +27,16 @@ public interface AddressMapper {
     int updateByPrimaryKeySelective(Address record);
 
     int updateByPrimaryKey(Address record);
+    
     /**
-	 * 修改指定用户所有地址为非默认值
-	 */
-	void changeAllStatus(@Param("uid") String uid);
+   	 * 修改指定用户所有地址为非默认值
+   	 */
+   	void changeAllStatus(@Param("uid") String uid);
 
-	/**
-	 * 获取指定用户所有地址信息
-	 * 
-	 * @return
-	 */
-	List<Address> getList(@Param("uid") String uid);
+   	/**
+   	 * 获取指定用户所有地址信息
+   	 * 
+   	 * @return
+   	 */
+   	List<Address> getList(@Param("uid") String uid);
 }

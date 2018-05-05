@@ -1,6 +1,5 @@
 package cn.itcast.shop.controller;
 
-import javassist.compiler.ast.Keyword;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,11 +7,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.itcast.shop.exception.MyException;
+import cn.itcast.shop.mapper.ProductMapper;
 import cn.itcast.shop.pojo.ProInitDto;
 import cn.itcast.shop.pojo.ProPagingParam;
 import cn.itcast.shop.pojo.ProductDto;
@@ -32,6 +34,8 @@ public class ProductController {
 	private ICityService cityService;
 	@Autowired
 	private IProductService productService;
+	@Autowired
+	private ProductMapper productMapper;
 
 	/**
 	 * 后台添加农产品页面初始化
@@ -40,7 +44,13 @@ public class ProductController {
 	 * @return
 	 */
 	@RequestMapping("/addInit")
-	public String addInit(Model model) {
+	public String addInit(Model model,HttpSession session) {
+		Seller seller = (Seller) session.getAttribute("sellerSession");
+		if (seller == null) {
+			String message = "您还未登陆，请先登录";
+			model.addAttribute("message", message);
+			return "forward:/adminjsps/login.jsp";
+		}
 		ProInitDto proInitDto = new ProInitDto();
 		proInitDto.setCategoryList(categoryService.getList());
 		proInitDto.setCityList(cityService.getListByPid(1));
@@ -54,20 +64,28 @@ public class ProductController {
 	 * @param model
 	 * @param session
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequestMapping("/getAdminPagingList")
 	public String getAdminPagingList(Model model, HttpSession session,
-			ProPagingParam param) {
+			ProPagingParam param) throws Exception {
 		Seller seller = (Seller) session.getAttribute("sellerSession");
 		if (seller == null) {
 			String message = "您还未登陆，请先登录";
 			model.addAttribute("message", message);
 			return "forward:/adminjsps/login.jsp";
 		}
+		//处理get请求乱码问题
+		String keyword=param.getKeyword();
+		if(!StringUtils.isEmpty(keyword)&&keyword.equals(new String(keyword.getBytes("iso8859-1"), "iso8859-1"))){
+			param.setKeyword(new String(keyword.getBytes("ISO8859-1"), "UTF-8"));
+		}
 		param.setSellerId(seller.getSellerId());
+		//设置分页查询页面
 		if (param.getQueryPage() == null)
 			param.setQueryPage(1);
-		param.setPageSize(2);
+		//设置每页显示数
+		param.setPageSize(6);
 		ProInitDto proInitDto = productService.getPagingList(param);
 		model.addAttribute("proInitDto", proInitDto);
 		return "forward:/adminjsps/productList.jsp";
@@ -98,13 +116,16 @@ public class ProductController {
 		}
 		// 校验信息
 		Boolean flag = true;
-		// 封面图
-		if (head == null || head.getOriginalFilename() == null
-				|| head.getOriginalFilename().length() <= 0) {
-
-			productParam.setErrorMsg("proImage", "封面图不能为空");
-			flag = false;
-
+		
+		//新增商品
+		if(StringUtils.isEmpty(productParam.getProId())){
+			// 封面图
+			if (head == null || head.getOriginalFilename() == null
+					|| head.getOriginalFilename().length() <= 0) {
+				productParam.setErrorMsg("proImage", "封面图不能为空");
+				flag = false;
+	
+			}
 		}
 		if (!productParam.validate()) {
 			flag = false;
@@ -114,11 +135,8 @@ public class ProductController {
 			return "forward:/adminjsps/addPro.jsp";
 		} else {
 			productParam.setSellerId(seller.getSellerId());
-			ProductParam pro = new ProductParam();
-			BeanUtils.copyProperties(
-					productService.add(productParam, pic, head), pro);
-			model.addAttribute("productParam", pro);
-			return "forward:/adminjsps/addPro.jsp";
+			productService.add(productParam, pic, head);
+			return "redirect:/product/getAdminPagingList.action";
 
 		}
 	}
@@ -136,17 +154,17 @@ public class ProductController {
 	public String getProById(Model model, String id, HttpSession session)
 			throws Exception {
 		User user = (User) session.getAttribute("loginSession");
-		ProductDto product = null;
+		ProInitDto proInitDto = null;
 		if (user != null)
-			product = productService.getProById(id, user.getUid());
+			proInitDto = productService.getProDetailInfo(id, user.getUid());
 		else
-			product = productService.getProById(id, null);
-		model.addAttribute("productParam", product);
+			proInitDto = productService.getProDetailInfo(id, null);
+		model.addAttribute("proInitDto", proInitDto);
 		return "forward:/jsps/introduction.jsp";
 	}
 
 	/**
-	 * 
+	 * 首页初始化
 	 * @param model
 	 * @param id
 	 * @param session
@@ -156,12 +174,7 @@ public class ProductController {
 	@RequestMapping(value = "/mainInit", method = { RequestMethod.GET })
 	public String mainInit(Model model, String id, HttpSession session)
 			throws Exception {
-		// User user=(User)session.getAttribute("loginSession");
 		ProInitDto dto = productService.mainInit();
-		// if(user!=null)
-		// product=productService.getProById(id,user.getUid());
-		// else
-		// product=productService.getProById(id,null);
 		model.addAttribute("mainProInitDto", dto);
 		return "forward:/jsps/main.jsp";
 	}
@@ -178,11 +191,84 @@ public class ProductController {
 	@RequestMapping(value = "/getPagingList")
 	public String getPagingList(Model model, ProPagingParam param,
 			HttpSession session) throws Exception {
+		String keyword=param.getKeyword();
+		//处理get请求乱码问题
+		if(!StringUtils.isEmpty(keyword)&&keyword.equals(new String(keyword.getBytes("iso8859-1"), "iso8859-1"))){
+			param.setKeyword(new String(keyword.getBytes("ISO8859-1"), "UTF-8"));
+		}
 		if (param.getQueryPage() == null)
 			param.setQueryPage(1);
-		param.setPageSize(3);
+		param.setPageSize(8);
 		ProInitDto proInitDto = productService.getPagingList(param);
 		model.addAttribute("proInitDto", proInitDto);
 		return "forward:/jsps/proList.jsp";
+	}
+	@RequestMapping(value = "/deleted")
+	public String deleted(Model model, String[] proIds,
+			HttpSession session) throws Exception {
+		Seller seller = (Seller) session.getAttribute("sellerSession");
+		if (seller == null) {
+			String message = "您还未登陆，请先登录";
+			model.addAttribute("message", message);
+			return "forward:/adminjsps/login.jsp";
+		}
+		
+		productService.deleted(proIds,seller.getSellerId());
+		return "redirect:/product/getAdminPagingList.action";
+	}
+	
+	@RequestMapping(value = "/changeStatusTrue")
+	public String changeStatusTrue(Model model, String[] proIds,
+			HttpSession session) throws Exception {
+		Seller seller = (Seller) session.getAttribute("sellerSession");
+		if (seller == null) {
+			String message = "您还未登陆，请先登录";
+			model.addAttribute("message", message);
+			return "forward:/adminjsps/login.jsp";
+		}
+		
+		productService.changeStatus(proIds,seller.getSellerId(),1);
+		return "redirect:/product/getAdminPagingList.action";
+	}
+	
+	@RequestMapping(value = "/changeStatusFalse")
+	public String changeStatusFalse(Model model, String[] proIds,
+			HttpSession session) throws Exception {
+		Seller seller = (Seller) session.getAttribute("sellerSession");
+		if (seller == null) {
+			String message = "您还未登陆，请先登录";
+			model.addAttribute("message", message);
+			return "forward:/adminjsps/login.jsp";
+		}
+		
+		productService.changeStatus(proIds,seller.getSellerId(),0);
+		return "redirect:/product/getAdminPagingList.action";
+	}
+	
+	/**
+	 * 编辑商品
+	 * 
+	 * @param model
+	 * @param id
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/editProduct", method = { RequestMethod.GET })
+	public String editProduct(Model model, String id, HttpSession session)
+			throws Exception {
+		if(StringUtils.isEmpty(id)){
+			throw new MyException("id不能为空");
+		}
+		Seller seller = (Seller) session.getAttribute("sellerSession");
+		if (seller == null) {
+			String message = "您还未登陆，请先登录";
+			model.addAttribute("message", message);
+			return "forward:/adminjsps/login.jsp";
+		}
+		ProductParam product = new ProductParam();
+		BeanUtils.copyProperties(productMapper.selectByPrimaryKey(id), product);
+		model.addAttribute("productParam", product);
+		return "forward:/adminjsps/addPro.jsp";
 	}
 }

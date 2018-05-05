@@ -29,10 +29,16 @@ public interface ScanMapper {
     int updateByPrimaryKey(Scan record);
 
     /**
-     * 根据商品id和用户id查询浏览记录
+     * 根据用户id查询最新浏览记录
      * @param uid 用户id
-     * @param proId 商品id
      * @return
      */
-	Scan getScan(@Param("uid") String uid, @Param("proId") String proId);
+	Scan getScan(@Param("uid") String uid);
+
+	/**
+	 * 查询浏览记录列表
+	 * @param uid
+	 * @return
+	 */
+	List<Scan> getListByUid(@Param("uid")String uid);
 }

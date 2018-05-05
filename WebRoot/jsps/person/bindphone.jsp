@@ -20,21 +20,23 @@
 <link href="<%=path%>/css/amazeui.css" rel="stylesheet" type="text/css">
 
 <link href="<%=path%>/css/personal.css" rel="stylesheet" type="text/css">
-<link href="<%=path%>/css/stepstyle.css" rel="stylesheet" type="text/css">
+<link href="<%=path%>/css/stepstyle.css" rel="stylesheet"
+	type="text/css">
 
 <script type="text/javascript" src="<%=path%>/js/jquery-1.7.2.min.js"></script>
 <script src="<%=path%>/js/amazeui.js"></script>
 <script type="text/javascript">
 	function sendMobileCode1() {
-		var phone = document.getElementById('phone').value;
-		var context = document.getElementById('PageContext').value;
-		window.location.href = context + "/user/sendBindMessage.action?phone="
-				+ phone;
+		//提交form
+		document.form1.action='<%=path%>/user/sendBindMessage.action';
+		document.form1.submit();
+		
 	}
 	function sendMobileCode() {
-		var context = document.getElementById('PageContext').value;
-		window.location.href = context+ "/user/sendBindOldMessage.action?phone="
-				+ ${loginSession.phone };
+		//提交form
+		document.form1.action='<%=path%>/user/sendBindOldMessage.action';
+		document.form1.submit();
+		
 	}
 </script>
 </head>
@@ -46,80 +48,19 @@
 			<div class="mt-logo">
 				<!--顶部导航条 -->
 				<div class="am-container header">
-					<ul class="message-l">
-						<div class="topMessage">
-							<div class="menu-hd">
-								<a href="#" target="_top" class="h">亲，请登录</a> <a href="#"
-									target="_top">免费注册</a>
-							</div>
-						</div>
-					</ul>
-					<ul class="message-r">
-						<div class="topMessage home">
-							<div class="menu-hd">
-								<a href="#" target="_top" class="h">商城首页</a>
-							</div>
-						</div>
-						<div class="topMessage my-shangcheng">
-							<div class="menu-hd MyShangcheng">
-								<a href="#" target="_top"><i class="am-icon-user am-icon-fw"></i>个人中心</a>
-							</div>
-						</div>
-						<div class="topMessage mini-cart">
-							<div class="menu-hd">
-								<a id="mc-menu-hd" href="#" target="_top"><i
-									class="am-icon-shopping-cart  am-icon-fw"></i><span>购物车</span><strong
-									id="J_MiniCartNum" class="h">0</strong></a>
-							</div>
-						</div>
-						<div class="topMessage favorite">
-							<div class="menu-hd">
-								<a href="#" target="_top"><i
-									class="am-icon-heart am-icon-fw"></i><span>收藏夹</span></a>
-							</div>
-					</ul>
+					<jsp:include page="/jsps/include/header.jsp" />
 				</div>
 
 				<!--悬浮搜索框-->
 
-				<div class="nav white">
-					<div class="logoBig">
-						<li><img src="<%=path%>/images/logobig.PNG" /></li>
-					</div>
-
-					<div class="search-bar pr">
-						<a name="index_none_header_sysc" href="#"></a>
-						<form>
-							<input id="searchInput" name="index_none_header_sysc" type="text"
-								placeholder="搜索" autocomplete="off"> <input
-								id="ai-topsearch" class="submit am-btn" value="搜索" index="1"
-								type="submit">
-						</form>
-					</div>
-				</div>
+				<jsp:include page="/jsps/include/search.jsp" />
 
 				<div class="clear"></div>
-			</div>
 			</div>
 		</article>
 	</header>
 	<div class="nav-table">
-		<div class="long-title">
-			<span class="all-goods">全部分类</span>
-		</div>
-		<div class="nav-cont">
-			<ul>
-				<li class="index"><a href="#">首页</a></li>
-				<li class="qc"><a href="#">闪购</a></li>
-				<li class="qc"><a href="#">限时抢</a></li>
-				<li class="qc"><a href="#">团购</a></li>
-				<li class="qc last"><a href="#">大包装</a></li>
-			</ul>
-			<div class="nav-extra">
-				<i class="am-icon-user-secret am-icon-md nav-user"></i><b></b>我的福利 <i
-					class="am-icon-angle-right" style="padding-left: 10px;"></i>
-			</div>
-		</div>
+		<jsp:include page="/jsps/include/shopnav.jsp" />
 	</div>
 	<b class="line"></b>
 	<div class="center">
@@ -147,10 +88,11 @@
 						<div class="u-progress-bar-inner"></div>
 					</div>
 				</div>
-				<form class="am-form am-form-horizontal" action="${pageContext.request.contextPath}/user/bindphone.action" method="post">
-				<span>${message }</span>
-				<input id="PageContext" type="hidden"
-								value="${pageContext.request.contextPath}" />
+				<form class="am-form am-form-horizontal" name="form1"
+					action="${pageContext.request.contextPath}/user/bindphone.action"
+					method="post">
+					<p align="center" style=" color:#ff0000">${message }</p>
+					 <input id="PageContext" type="hidden" value="${pageContext.request.contextPath}" />
 					<div class="am-form-group bind">
 						<label for="user-phone" class="am-form-label">验证手机</label>
 						<div class="am-form-content">
@@ -160,31 +102,34 @@
 					<div class="am-form-group code">
 						<label for="user-code" class="am-form-label">验证码</label>
 						<div class="am-form-content">
-							<input type="tel" name="code" value="${ code}" id="user-code" placeholder="短信验证码">
+							<input type="tel" name="code" value="${ code}" id="user-code"
+								placeholder="短信验证码">
 						</div>
-						<a class="btn" href="javascript:void(0);"
-							onclick="sendMobileCode()" id="sendMobileCode">
-							<span class="am-btn am-btn-danger">验证码</span>
+						<a class="btn" href="javascript:void(0);" onclick="sendMobileCode()"
+							 id="sendMobileCode"> <span
+							class="am-btn am-btn-danger">验证码</span>
 						</a>
 					</div>
 					<div class="am-form-group">
 						<label for="user-new-phone" class="am-form-label">验证手机</label>
 						<div class="am-form-content">
-							<input type="tel" name="phone" value="${ phone}" id="phone" placeholder="绑定新手机号">
+							<input type="tel" name="phone" value="${ phone}" id="phone"
+								placeholder="绑定新手机号">
 						</div>
 					</div>
 					<div class="am-form-group code">
 						<label for="user-new-code" class="am-form-label">验证码</label>
 						<div class="am-form-content">
-							<input type="tel" name="code2" value="${ code2}" id="user-new-code" placeholder="短信验证码">
+							<input type="tel" name="code2" value="${ code2}"
+								id="user-new-code" placeholder="短信验证码">
 						</div>
 						<a class="btn" href="javascript:void(0);"
-							onclick="sendMobileCode1()" id="sendMobileCode">
-							<span class="am-btn am-btn-danger">验证码</span>
+							onclick="sendMobileCode1()" id="sendMobileCode"> <span
+							class="am-btn am-btn-danger">验证码</span>
 						</a>
 					</div>
 					<div class="info-btn">
-						<input class="am-btn am-btn-danger" type="submit" value="保存修改"/>
+						<input class="am-btn am-btn-danger" type="submit" value="保存修改" />
 					</div>
 
 				</form>
@@ -192,52 +137,35 @@
 			</div>
 			<!--底部-->
 			<div class="footer">
-				<div class="footer-hd">
-					<p>
-						<a href="#">恒望科技</a> <b>|</b> <a href="#">商城首页</a> <b>|</b> <a
-							href="#">支付宝</a> <b>|</b> <a href="#">物流</a>
-					</p>
-				</div>
-				<div class="footer-bd">
-					<p>
-						<a href="#">关于恒望</a> <a href="#">合作伙伴</a> <a href="#">联系我们</a> <a
-							href="#">网站地图</a> <em>© 2015-2025 Hengwang.com 版权所有</em>
-					</p>
-				</div>
+				<jsp:include page="/jsps/include/footer.jsp" />
 			</div>
 		</div>
 
 		<aside class="menu">
 			<ul>
-				<li class="person"><a href="index.html">个人中心</a></li>
+				<li class="person"><a href="<%=path%>/jsps/person/index.jsp">个人中心</a></li>
 				<li class="person"><a href="#">个人资料</a>
 					<ul>
-						<li><a href="information.html">个人信息</a></li>
-						<li><a href="safety.html">安全设置</a></li>
-						<li><a href="address.html">收货地址</a></li>
+						<li><a href="<%=path%>/jsps/person/information.jsp">个人信息</a></li>
+						<li><a href="<%=path%>/jsps/person/password.jsp">修改密码</a></li>
+						<li class="active"><a href="<%=path%>/jsps/person/bindphone.jsp">换绑手机</a></li>
+						<li><a href="<%=path%>/jsps/person/address.jsp">收货地址</a></li>
 					</ul></li>
 				<li class="person"><a href="#">我的交易</a>
 					<ul>
-						<li><a href="order.html">订单管理</a></li>
-						<li><a href="change.html">退款售后</a></li>
-					</ul></li>
-				<li class="person"><a href="#">我的资产</a>
-					<ul>
-						<li><a href="coupon.html">优惠券 </a></li>
-						<li><a href="bonus.html">红包</a></li>
-						<li><a href="bill.html">账单明细</a></li>
-					</ul></li>
+						<li><a href="<%=path%>/jsps/person/order.jsp">订单管理</a></li>
+						
+					</ul>
+				</li>
 
 				<li class="person"><a href="#">我的小窝</a>
 					<ul>
-						<li><a href="collection.html">收藏</a></li>
-						<li><a href="foot.html">足迹</a></li>
-						<li><a href="comment.html">评价</a></li>
-						<li><a href="news.html">消息</a></li>
-					</ul></li>
+						<li><a href="<%=path%>/jsps/person/collection.jsp">收藏</a></li>
+						<li><a href="<%=path%>/jsps/person/foot.jsp">足迹</a></li>
+					</ul>
+				</li>
 
 			</ul>
-
 		</aside>
 	</div>
 

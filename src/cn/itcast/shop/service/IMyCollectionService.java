@@ -1,15 +1,22 @@
 package cn.itcast.shop.service;
 
-import cn.itcast.shop.pojo.User;
+import java.util.List;
+
+import cn.itcast.shop.pojo.MyCollectionDto;
 
 public interface IMyCollectionService {
 
 	/**
-	 * 收藏商品
-	 * @param id
-	 * @param user
-	 * @throws Exception 
+	 *  收藏商品
+	 * @param proIds
+	 * @param uid
+	 * @throws Exception
 	 */
-	void collect(String id, User user) throws Exception;
+	void collect(String[] proIds, String uid) throws Exception;
+
+	List<MyCollectionDto> getList(String uid,Integer limit);
+
+	void delete(String id) throws Exception;
+
 
 }

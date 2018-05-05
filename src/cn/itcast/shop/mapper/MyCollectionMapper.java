@@ -35,4 +35,6 @@ public interface MyCollectionMapper {
      * @return
      */
 	MyCollection getCollect(@Param("proId")String proId, @Param("uid")String uid);
+
+	List<MyCollection> getListByUid(@Param("uid")String uid,@Param("limit")Integer limit);
 }

@@ -13,6 +13,7 @@ public class ProInitDto {
 	private List<Product> specialList;// 特产表
 	private List<Product> fruitList;// 水果列表
 	private List<Product> seaList;// 海味列表
+	private ProductDto product;
 	private ProPagingParam proPageParam;
 
 	public List<Category> getCategoryList() {
@@ -103,4 +104,13 @@ public class ProInitDto {
 		this.proPageParam = proPageParam;
 	}
 
+	public ProductDto getProduct() {
+		return product;
+	}
+
+	public void setProduct(ProductDto product) {
+		this.product = product;
+	}
+
+	
 }

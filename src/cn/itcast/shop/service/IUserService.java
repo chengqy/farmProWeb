@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 
+import cn.itcast.shop.pojo.PersonInit;
 import cn.itcast.shop.pojo.User;
 import cn.itcast.shop.pojo.UserParam;
 
@@ -46,4 +47,11 @@ public interface IUserService {
 	 * @param user
 	 */
 	public int update(User user,HttpSession session);
+
+	/**
+	 * 个人主页初始化
+	 * @param uid
+	 * @return
+	 */
+	public PersonInit personInit(String uid);
 }

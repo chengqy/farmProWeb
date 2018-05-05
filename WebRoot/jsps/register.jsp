@@ -24,18 +24,13 @@
 				+ phone;
 	}
 </script>
-<style type="text/css">
-span {
-	color: #ff0000;
-	font-size:10px;
-}
-</style>
 </head>
 
 <body>
 
 	<div class="login-boxtitle">
-		<a href="/farmProShop/jsps/main.jsp"><img alt="" src="../images/logobig.PNG" /></a>
+		<a href="/farmProShop/jsps/main.jsp"><img alt=""
+			src="../images/logobig.PNG" /></a>
 	</div>
 
 	<div class="res-banner">
@@ -52,10 +47,9 @@ span {
 						<ul class="am-tabs-nav am-nav am-nav-tabs am-nav-justify">
 							<li class="am-active"><a href="">手机号注册</a></li>
 						</ul>
-						${message}
-						
+						<p align="center" style=" color:#ff0000;font-size: 10px"> ${message }</p>
 						<div class="am-tab-panel">
-							<span>${userValidatorparam.errors.phone}</span>
+							<span style=" color:#ff0000;font-size: 10px">${userValidatorparam.errors.phone}</span>
 							<div class="user-phone">
 								<label for="phone"><i
 									class="am-icon-mobile-phone am-icon-md"></i></label> <input type="tel"
@@ -64,7 +58,7 @@ span {
 
 							</div>
 
-							<span>${userValidatorparam.errors.code}</span>
+							<span style=" color:#ff0000;font-size: 10px">${userValidatorparam.errors.code}</span>
 							<div class="verification">
 								<label for="code"><i class="am-icon-code-fork"></i></label> <input
 									type="tel" name="code" value="${userValidatorparam.code}"
@@ -76,15 +70,14 @@ span {
 							</div>
 
 							<input id="PageContext" type="hidden"
-								value="${pageContext.request.contextPath}" />
-							<span>${userValidatorparam.errors.password}</span>	
+								value="${pageContext.request.contextPath}" /> <span  style=" color:#ff0000;font-size: 10px">${userValidatorparam.errors.password}</span>
 							<div class="user-pass">
 								<label for="password"><i class="am-icon-lock"></i></label> <input
 									type="password" name="password" id="password"
 									value="${userValidatorparam.password}" placeholder="设置密码">
-								
+
 							</div>
-							 <span>${userValidatorparam.errors.password2}</span>
+							<span style=" color:#ff0000;font-size: 10px">${userValidatorparam.errors.password2}</span>
 							<div class="user-pass">
 								<label for="passwordRepeat"><i class="am-icon-lock"></i></label>
 								<input type="password" name="password2"
@@ -113,18 +106,9 @@ span {
 		</div>
 	</div>
 
-	<div class="footer ">
-		<div class="footer-hd ">
-			<p>
-				<a href="# ">粤购网科技</a> <b>|</b> <a href="main.jsp ">商城首页</a>
-			</p>
-		</div>
-		<div class="footer-bd ">
-			<p>
-				<a href="main.jsp ">关于粤购网</a> <a href="# ">合作伙伴</a> <a href="# ">联系我们</a>
-				<a href="# ">网站地图</a> <em>© 2015-2025 Hengwang.com 版权所有</em>
-			</p>
-		</div>
+	<!--底部-->
+	<div class="footer">
+		<jsp:include page="/jsps/include/footer.jsp" />
 	</div>
 </body>
 

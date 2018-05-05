@@ -11,7 +11,7 @@
     <result column="keyword" property="keyword" jdbcType="VARCHAR" />
     <result column="pictures" property="pictures" jdbcType="VARCHAR" />
     <result column="introduction" property="introduction" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="BIT" />
     <result column="cate_id" property="cateId" jdbcType="INTEGER" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
@@ -408,7 +408,7 @@
   	
   	</if>
   	<choose>
-  		<when test="status!=null and status!=''">
+  		<when test="status!=null">
   			and status=#{status}
   		</when>
   		<otherwise>
@@ -419,8 +419,8 @@
   	</choose>
   	
   	<choose>
-  		<when test="order!=null">
-  			order by #{order} desc
+  		<when test="order!=null and order!=''">
+  			order by ${order} asc
   		</when>
   		<otherwise>
   			order by create_time desc
@@ -455,7 +455,7 @@
   	
   	</if>
   	<choose>
-  		<when test="status!=null and status!=''">
+  		<when test="status!=null">
   			and status=#{status}
   		</when>
   		<otherwise>
@@ -465,4 +465,38 @@
   		</otherwise>
   	</choose>
    </select>
+   
+   <update id="updateStock">
+    update product 
+    <choose>
+    	<when test="status==0">
+    		set stock=stock-#{amount}
+    	</when>
+    	<otherwise>
+    		set stock=stock+#{amount}
+    	</otherwise>
+    </choose>
+     where pro_id=#{proId}
+   </update>
+   
+   <select id="getSellerList" resultType="string">
+	   select seller_id from product where deleted=false and pro_id in
+	   <foreach collection="proIds" close=")" item="id" open="(" separator=",">
+	   #{id}
+	   </foreach>
+	   group by seller_id
+   </select>
+   <update id="deleted">
+    	update product set deleted=true where seller_id=#{sellerId} and pro_id in
+	   <foreach collection="proIds" close=")" item="id" open="(" separator=",">
+	   #{id}
+	   </foreach>
+   </update>
+   <update id="changeStatus">
+    	update product set status=#{status} where seller_id=#{sellerId} and pro_id in
+	   <foreach collection="proIds" close=")" item="id" open="(" separator=",">
+	   #{id}
+	   </foreach>
+   </update>
+   
 </mapper>

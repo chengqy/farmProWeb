@@ -10,7 +10,7 @@ public class ProPagingParam extends PageParam {
 	private Date endTime;
 	private String sellerId;
 	private String order;
-	private String status;
+	private Integer status;
 	public Integer getCateId() {
 		return cateId;
 	}
@@ -53,11 +53,12 @@ public class ProPagingParam extends PageParam {
 	public void setOrder(String order) {
 		this.order = order;
 	}
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
 	
 }

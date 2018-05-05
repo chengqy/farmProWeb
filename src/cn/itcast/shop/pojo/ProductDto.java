@@ -9,6 +9,7 @@ public class ProductDto extends Product {
 	private String cityName;
 	private String updateTime;
 	private Integer isCollect;
+	private int sales;//ÔÂÏúÁ¿
 
 	public String getCateName() {
 		return cateName;
@@ -50,4 +51,12 @@ public class ProductDto extends Product {
 		this.isCollect = isCollect;
 	}
 
+	public int getSales() {
+		return sales;
+	}
+
+	public void setSales(int sales) {
+		this.sales = sales;
+	}
+	
 }

@@ -37,14 +37,8 @@
 			</div>
 			<div class="login-box">
 
-				<h3 class="title">登录商城</h3>
-				<%-- <c:if test="${errors!=null }">
-					<c:forEach items="errors" var="error">
-						${error.defaultMessage }
-					</c:forEach>
-				
-				</c:if> --%>
-				${message }
+				<h3 class="title">粤购网后台登录</h3>
+				<p align="center" style=" color:#ff0000" >${message }</p>
 				<%
 					String message = (String) request.getAttribute("message");
 					if (message != null)
@@ -80,18 +74,7 @@
 
 
 	<div class="footer ">
-		<div class="footer-hd ">
-			<p>
-				<a href="# ">恒望科技</a> <b>|</b> <a href="# ">商城首页</a> <b>|</b> <a
-					href="# ">支付宝</a> <b>|</b> <a href="# ">物流</a>
-			</p>
-		</div>
-		<div class="footer-bd ">
-			<p>
-				<a href="# ">关于恒望</a> <a href="# ">合作伙伴</a> <a href="# ">联系我们</a> <a
-					href="# ">网站地图</a> <em>© 2015-2025 Hengwang.com 版权所有</em>
-			</p>
-		</div>
+		<jsp:include page="/jsps/include/footer.jsp" />
 	</div>
 </body>
 

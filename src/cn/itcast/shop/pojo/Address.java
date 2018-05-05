@@ -3,107 +3,98 @@ package cn.itcast.shop.pojo;
 import java.util.Date;
 
 public class Address {
-	private String id;
+    private String id;
 
-	private String province;
+    private String province;
 
-	private String city;
+    private String city;
 
-	private String zone;
+    private String address;
 
-	private String address;
+    private String receiver;
 
-	private String receiver;
+    private String phone;
 
-	private String phone;
+    private String uid;
 
-	private String uid;
+    private Date createTime;
 
-	private Date createTime;
+    private Integer status;
 
-	private Integer status;
+    private Boolean deleted;
 
-	private Boolean deleted;
+    public String getId() {
+        return id;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
 
-	public void setId(String id) {
-		this.id = id == null ? null : id.trim();
-	}
+    public String getProvince() {
+        return province;
+    }
 
-	public String getProvince() {
-		return province;
-	}
+    public void setProvince(String province) {
+        this.province = province == null ? null : province.trim();
+    }
 
-	public void setProvince(String province) {
-		this.province = province == null ? null : province.trim();
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public void setCity(String city) {
+        this.city = city == null ? null : city.trim();
+    }
 
-	public void setCity(String city) {
-		this.city = city == null ? null : city.trim();
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public String getZone() {
-		return zone;
-	}
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
 
-	public void setZone(String zone) {
-		this.zone = zone == null ? null : zone.trim();
-	}
+    public String getReceiver() {
+        return receiver;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setReceiver(String receiver) {
+        this.receiver = receiver == null ? null : receiver.trim();
+    }
 
-	public void setAddress(String address) {
-		this.address = address == null ? null : address.trim();
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public String getReceiver() {
-		return receiver;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
 
-	public void setReceiver(String receiver) {
-		this.receiver = receiver == null ? null : receiver.trim();
-	}
+    public String getUid() {
+        return uid;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setUid(String uid) {
+        this.uid = uid == null ? null : uid.trim();
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone == null ? null : phone.trim();
-	}
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-	public String getUid() {
-		return uid;
-	}
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
-	public void setUid(String uid) {
-		this.uid = uid == null ? null : uid.trim();
-	}
+    
+    public Boolean getDeleted() {
+        return deleted;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-	}
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
 	public Integer getStatus() {
 		return status;

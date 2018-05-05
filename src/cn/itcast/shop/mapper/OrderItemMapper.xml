@@ -240,4 +240,51 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where order_item_id = #{orderItemId,jdbcType=CHAR}
   </update>
+  
+  <select id="getListByOrderId" resultType="cn.itcast.shop.pojo.OrderItemDto">
+  SELECT order_item_id orderItemId,amount,total,order_id orderId,o.pro_id proId,pro_name proName,price,pro_image proImage,specification
+   FROM order_item o, product p 
+  WHERE o.pro_id=p.pro_id AND o.deleted=FALSE AND o.order_id=#{orderId}
+  
+  </select>
+  
+  <update id="deleted">
+  update order_item set deleted=true where order_id=#{orderId}
+  </update>
+   <select id="getSalesList" resultType="cn.itcast.shop.pojo.SalesInfo">
+	select sum(total) as value,p.pro_name as name from order_item oi join
+	product p on oi.pro_id=p.pro_id where p.deleted=0 and oi.deleted=0
+	<if test="sellerId != null and sellerId != ''" >
+        AND p.seller_id = #{sellerId}
+      </if>
+	<if test="beginDate != null" >
+       and  oi.create_time <![CDATA[>=]]> #{beginDate}
+      </if>
+	<if test="endDate != null" >
+       and  oi.create_time <![CDATA[<=]]> #{endDate}
+      </if>
+	group by p.pro_name
+</select>
+
+<select id="getSalesByProId" resultType="int">
+	select sum(amount) from order_item where deleted=0 and pro_id=#{id} and create_time <![CDATA[>=]]> #{beginTime}
+	and create_time <![CDATA[<=]]> #{endTime}
+</select>
+
+<select id="getHot" resultType="string">
+	select pro_id from order_item where deleted=0
+	group by pro_id
+	order by count(*) desc
+	limit 1
+</select>
+<select id="getMonthSalesList" resultType="cn.itcast.shop.pojo.MonthSalesDetail">
+select sum(total) as sales,p.pro_name as pro , DATE_FORMAT(oi.create_time,'%Y-%m') months from order_item oi join
+	product p on oi.pro_id=p.pro_id where p.deleted=0 and oi.deleted=0
+ AND p.seller_id =#{sellerId} AND Date_FORMAT(oi.create_time,'%Y-%m') in
+ <foreach item="month" collection="months" open="(" close=")" separator=",">
+ #{month}
+ </foreach>
+group by p.pro_name,DATE_FORMAT(oi.create_time,'%Y-%m') 
+ order by DATE_FORMAT(oi.create_time, '%Y-%m')
+</select>
 </mapper>

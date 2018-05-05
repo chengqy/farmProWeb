@@ -28,7 +28,6 @@ public class SmsUtils {
 
 	public static SendSmsResponse sendSms(String phoneNumber, String code)
 			throws Exception {
-//		System.out.println(System.getProperty("user.dir"));
 		InputStream in = new BufferedInputStream(new FileInputStream(
 				"../webapps/farmProShop/WEB-INF/classes/sms.properties"));
 		Properties p = new Properties();
@@ -55,18 +54,4 @@ public class SmsUtils {
 		return sendSmsResponse;
 
 	}
-
-	/*public static void main(String[] args) {
-		SendSmsResponse sendSmsResponse = null;
-		try {
-			sendSmsResponse = sendSms("1342543", "123456");
-		} catch (Exception e) {
-			System.out.println(e.toString());
-			e.printStackTrace();
-		}
-		if(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK"))
-			System.out.println(sendSmsResponse.getCode());
-		else
-			System.out.println(sendSmsResponse.getCode());
-	}*/
 }

@@ -1,17 +1,16 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%-- <%
-	if (request.getAttribute("proInitDto") == null) {
-%>
-<jsp:forward page="/product/init.action"></jsp:forward>
-<%
-	}
-%> --%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
+%>
+<%
+	if (request.getSession().getAttribute("sellerSession") == null) {
+%>
+<jsp:forward page="/adminjsps/login.jsp"></jsp:forward>
+<%
+	}
 %>
 <!doctype html>
 <html class="no-js">
@@ -25,553 +24,258 @@
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="renderer" content="webkit">
 <meta http-equiv="Cache-Control" content="no-siteapp" />
-<link rel="icon" type="image/png" href="<%=path%>/adminjsps/assets/i/favicon.png">
+<link rel="icon" type="image/png"
+	href="<%=path%>/adminjsps/assets/i/favicon.png">
 <link rel="apple-touch-icon-precomposed"
 	href="<%=path%>/adminjsps/assets/i/app-icon72x72@2x.png">
 <meta name="apple-mobile-web-app-title" content="Amaze UI" />
-<link rel="stylesheet" href="<%=path%>/adminjsps/assets/css/amazeui.min.css" />
+<link rel="stylesheet"
+	href="<%=path%>/adminjsps/assets/css/amazeui.min.css" />
 <link rel="stylesheet" href="<%=path%>/adminjsps/assets/css/admin.css">
+
 <script src="<%=path%>/adminjsps/assets/js/jquery.min.js"></script>
 <script src="<%=path%>/adminjsps/assets/js/app.js"></script>
+<script src="<%=path%>/adminjsps/assets/js/echarts.js"></script>
+<style type="text/css">
+<!--
+#main {
+margin-top:20px;
+	height: 1000px;
+	width: 100%;
+}
+
+#left {
+	float: left;
+	height: 450px;
+	width: 50%;
+}
+
+#right {
+	float: left;
+	height: 450px;
+	width: 50%;
+}
+#uleft {
+	float: left;
+	height: 450px;
+	width: 98%;
+}
+-->
+</style>
+<script type="text/javascript">
+	function chart1(data) {
+		legends=[];
+		for(i in data){
+			legends.push(data[i].name);
+		}
+		var myChart = echarts.init(document.getElementById('left'));
+		option = {
+			title : {
+				text : '最近七日销量分析',
+				subtext : '',
+				x : 'center'
+			},
+			tooltip : {
+				trigger : 'item',
+				formatter : "{a} <br/>{b} : {c} ({d}%)"
+			},
+			legend : {
+				orient : 'vertical',
+				left : 'left',
+				data : legends
+			},
+			series : [ {
+				name : '商品',
+				type : 'pie',
+				radius : '55%',
+				center : [ '50%', '60%' ],
+				data :data,
+				itemStyle : {
+					emphasis : {
+						shadowBlur : 10,
+						shadowOffsetX : 0,
+						shadowColor : 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			} ]
+		};
+		// 使用刚指定的配置项和数据显示图表。
+		myChart.setOption(option);
+	}
+
+	function chart2(data) {
+		category=[]
+		series=[]
+		for(i in data){
+			category.push(data[i].day)
+			series.push(data[i].income)
+		}
+		var myChart = echarts.init(document.getElementById('right'));
+
+		option = {
+			title : {
+				text : '最近七日收入分析',
+				subtext : '',
+				x : 'center'
+			},
+			xAxis : {
+				type : 'category',
+				data : category
+			},
+			yAxis : {
+				type : 'value'
+			},
+			series : [ {
+				data : series,
+				type : 'line'
+			} ]
+		};
+		myChart.setOption(option);
+
+	}
+	function chart3(data) {
+		months=[]
+		for(i in data.months){
+			months.push(data.months[i])
+		}
+		series=[]
+		pro=[]
+		for(i in data.salesInfos){
+			pro.push(data.salesInfos[i].pro)
+			da=[]
+			for(j in data.salesInfos[i].sales){
+				da.push(data.salesInfos[i].sales[j])
+			}
+			series.push({
+				name:data.salesInfos[i].pro,
+	            type:'line',
+	            stack: '总量',
+	            data:da
+		       })
+		}
+		var myChart = echarts.init(document.getElementById('uleft'));
+		option = {
+			    title: {
+			        text: '销量分析'
+			    },
+			    tooltip : {
+			        trigger: 'axis',
+			    },
+			    legend: {
+			        data:pro
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    toolbox: {
+			        feature: {
+			            saveAsImage: {}
+			        }
+			    },
+			    xAxis : [
+			        {
+			            type : 'category',
+			            boundaryGap : false,
+			            data : months
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value'
+			        }
+			    ],
+			    series :series 
+			};
+		myChart.setOption(option);
+	}	
+	function getReportData(){
+		 $.ajax({
+			 url:"<%=path%>/report/report.action"
+			 ,success:function(json){
+			 $("#todayIncome").html(json.todayIncome);
+			 $("#totalIncome").html(json.totalIncome);
+			 $("#todayOrders").html(json.todayOrders);
+			 $("#totalOrders").html(json.totalOrders);
+			 chart1(json.sales);
+			 chart2(json.income);
+			 chart3(json.monthSales);
+		 }
+		 }); 
+	}
+</script>
 </head>
 
 <body>
 	<header class="am-topbar admin-header">
-		<div class="am-topbar-brand">
-			<img src="<%=path%>/adminjsps/assets/i/logo.png">
-		</div>
-
-		<div class="am-collapse am-topbar-collapse" id="topbar-collapse">
-			<ul class="am-nav am-nav-pills am-topbar-nav admin-header-list">
-
-				<li class="am-dropdown tognzhi" data-am-dropdown>
-					<button
-						class="am-btn am-btn-primary am-dropdown-toggle am-btn-xs am-radius am-icon-bell-o"
-						data-am-dropdown-toggle>
-						消息管理<span class="am-badge am-badge-danger am-round">6</span>
-					</button>
-					<ul class="am-dropdown-content">
-
-
-
-						<li class="am-dropdown-header">所有消息都在这里</li>
-						<li><a href="#">未发货订单 <span
-								class="am-badge am-badge-danger am-round">556</span></a></li>
-						<li><a href="#">低库存产品 <span
-								class="am-badge am-badge-danger am-round">556</span></a></li>
-						<li><a href="#">信息反馈</a></li>
-
-
-
-					</ul>
-				</li>
-
-				<li class="kuanjie"><a href="#">产品管理</a> <a href="#">评论管理</a> <a
-					href="#">订单管理</a> <a href="#">个人中心</a> <a href="#">系统设置</a></li>
-
-				<li class="soso">
-
-					<p>
-						<select
-							data-am-selected="{btnWidth: 70, btnSize: 'sm', btnStyle: 'default'}">
-							<option value="b">全部</option>
-							<option value="o">产品</option>
-							<option value="o">会员</option>
-
-						</select>
-
-					</p>
-
-					<p class="ycfg">
-						<input type="text" class="am-form-field am-input-sm"
-							placeholder="圆角表单域" />
-					</p>
-					<p>
-						<button class="am-btn am-btn-xs am-btn-default am-xiao">
-							<i class="am-icon-search"></i>
-						</button>
-					</p>
-				</li>
-
-
-
-
-				<li class="am-hide-sm-only" style="float: right;"><a
-					href="javascript:;" id="admin-fullscreen"><span
-						class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
-			</ul>
-		</div>
+		<jsp:include page="/adminjsps/include/topbar.jsp"></jsp:include>
 	</header>
 
 	<div class="am-cf admin-main">
 
 		<div class="nav-navicon admin-main admin-sidebar">
-
-
-			<div class="sideMenu am-icon-dashboard"
-				style="color:#aeb2b7; margin: 10px 0 0 0;">欢迎系统管理员：清风抚雪</div>
-			<div class="sideMenu">
-				<h3 class="am-icon-flag">
-					<em></em> <a href="#">商品管理</a>
-				</h3>
-				<ul>
-					<li><a href="">商品列表</a></li>
-					<li class="func" dataType='html' dataLink='msn.htm'
-						iconImg='images/msn.gif'>添加新商品</li>
-					<li>商品分类</li>
-					<li>用户评论</li>
-					<li>商品回收站</li>
-					<li>库存管理</li>
-				</ul>
-				<h3 class="am-icon-cart-plus">
-					<em></em> <a href="#"> 订单管理</a>
-				</h3>
-				<ul>
-					<li>订单列表</li>
-					<li>添加订单</li>
-					<li>发货单列表</li>
-				</ul>
-				<h3 class="am-icon-volume-up">
-					<em></em> <a href="#">信息通知</a>
-				</h3>
-				<ul>
-					<li>站内消息 /留言</li>
-
-					<li>客服</li>
-				</ul>
-				<h3 class="am-icon-gears">
-					<em></em> <a href="#">系统设置</a>
-				</h3>
-				<ul>
-					<li>数据备份</li>
-					<li>邮件/短信管理</li>
-					<li>上传/下载</li>
-					<li>权限</li>
-					<li>网站设置</li>
-					<li>第三方支付</li>
-					<li>提现 /转账 出入账汇率</li>
-					<li>平台设置</li>
-					<li>声音文件</li>
-				</ul>
-			</div>
-			<!-- sideMenu End -->
-
-			<script type="text/javascript">
-				jQuery(".sideMenu").slide({
-					titCell : "h3", //鼠标触发对象
-					targetCell : "ul", //与titCell一一对应，第n个titCell控制第n个targetCell的显示隐藏
-					effect : "slideDown", //targetCell下拉效果
-					delayTime : 300, //效果时间
-					triggerTime : 150, //鼠标延迟触发时间（默认150）
-					defaultPlay : true,//默认是否执行效果（默认true）
-					returnDefault : true
-				//鼠标从.sideMen移走后返回默认状态（默认false）
-				});
-			</script>
-
-
-
-
-
-
-
-
+			<jsp:include page="/adminjsps/include/left.jsp" />
 		</div>
 
 		<div class=" admin-content">
 
-			<div class="daohang">
-				<ul>
-					<li><button type="button"
-							class="am-btn am-btn-default am-radius am-btn-xs">首页</li>
-					<li><button type="button"
-							class="am-btn am-btn-default am-radius am-btn-xs">
-							帮助中心<a href="javascript: void(0)" class="am-close am-close-spin"
-								data-am-modal-close="">×</a>
-						</button></li>
-					<li><button type="button"
-							class="am-btn am-btn-default am-radius am-btn-xs">
-							奖金管理<a href="javascript: void(0)" class="am-close am-close-spin"
-								data-am-modal-close="">×</a>
-						</button></li>
-					<li><button type="button"
-							class="am-btn am-btn-default am-radius am-btn-xs">
-							产品管理<a href="javascript: void(0)" class="am-close am-close-spin"
-								data-am-modal-close="">×</a>
-						</button></li>
-
-
-				</ul>
-
-
-
-
-			</div>
-
-
-
-
+			<jsp:include page="/adminjsps/include/daohang.jsp"></jsp:include>
 			<div class="admin">
-
-
-
-
 
 				<div class="admin-index">
 					<dl data-am-scrollspy="{animation: 'slide-right', delay: 100}">
 						<dt class="qs">
-							<i class="am-icon-users"></i>
+							<i class="am-icon-shopping-cart"></i>
 						</dt>
-						<dd>455</dd>
-						<dd class="f12">团队数量</dd>
+						<dd id="todayOrders">0</dd>
+						<dd class="f12">今日订单</dd>
 					</dl>
 					<dl data-am-scrollspy="{animation: 'slide-right', delay: 300}">
 						<dt class="cs">
-							<i class="am-icon-area-chart"></i>
+							<i class="am-icon-cny"></i>
 						</dt>
-						<dd>455</dd>
+						<dd id="todayIncome">0</dd>
 						<dd class="f12">今日收入</dd>
 					</dl>
 					<dl data-am-scrollspy="{animation: 'slide-right', delay: 600}">
 						<dt class="hs">
 							<i class="am-icon-shopping-cart"></i>
 						</dt>
-						<dd>455</dd>
-						<dd class="f12">商品数量</dd>
+						<dd id="totalOrders">0</dd>
+						<dd class="f12">全部订单</dd>
 					</dl>
 					<dl data-am-scrollspy="{animation: 'slide-right', delay: 900}">
 						<dt class="ls">
 							<i class="am-icon-cny"></i>
 						</dt>
-						<dd>455</dd>
+						<dd id="totalIncome">0</dd>
 						<dd class="f12">全部收入</dd>
 					</dl>
 				</div>
-				<div class="admin-biaoge">
-					<div class="xinxitj">信息概况</div>
-					<table class="am-table">
-						<thead>
-							<tr>
-								<th>团队统计</th>
-								<th>全部会员</th>
-								<th>全部未激活</th>
-								<th>今日新增</th>
-								<th>今日未激活</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>普卡</td>
-								<td>普卡</td>
-								<td><a href="#">4534</a></td>
-								<td>+20</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>银卡</td>
-								<td>银卡</td>
-								<td>4534</td>
-								<td>+2</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>金卡</td>
-								<td>金卡</td>
-								<td>4534</td>
-								<td>+10</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>钻卡</td>
-								<td>钻卡</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>合计</td>
-								<td>合计</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="am-table">
-						<thead>
-							<tr>
-								<th>团队统计</th>
-								<th>全部会员</th>
-								<th>全部未激活</th>
-								<th>今日新增</th>
-								<th>今日未激活</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>普卡</td>
-								<td>普卡</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>银卡</td>
-								<td>银卡</td>
-								<td>4534</td>
-								<td>+2</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>金卡</td>
-								<td>金卡</td>
-								<td>4534</td>
-								<td>+10</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>钻卡</td>
-								<td>钻卡</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>合计</td>
-								<td>合计</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-						</tbody>
-					</table>
-					<table class="am-table">
-						<thead>
-							<tr>
-								<th>资金统计</th>
-								<th>账户总收入</th>
-								<th>账户总支出</th>
-								<th>账户余额</th>
-								<th>今日收入</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>普卡</td>
-								<td>普卡</td>
-								<td>4534</td>
-								<td>+20</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>银卡</td>
-								<td>银卡</td>
-								<td>4534</td>
-								<td>+2</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>金卡</td>
-								<td>金卡</td>
-								<td>4534</td>
-								<td>+10</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>钻卡</td>
-								<td>钻卡</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-							<tr>
-								<td>合计</td>
-								<td>合计</td>
-								<td>4534</td>
-								<td>+50</td>
-								<td>4534</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="shuju">
-					<div class="shujuone">
-						<dl>
-							<dt>全盘收入： 1356666</dt>
-							<dt>全盘支出： 5646465.98</dt>
-							<dt>全盘利润： 546464</dt>
-						</dl>
-						<ul>
-							<h2>26.83%</h2>
-							<li>全盘拨出</li>
-						</ul>
-					</div>
-					<div class="shujutow">
-						<dl>
-							<dt>全盘收入： 1356666</dt>
-							<dt>全盘支出： 5646465.98</dt>
-							<dt>全盘利润： 546464</dt>
-						</dl>
-						<ul>
-							<h2>26.83%</h2>
-							<li>全盘拨出</li>
-						</ul>
-					</div>
-					<div class="slideTxtBox">
-						<div class="hd">
-							<ul>
-								<li>其他信息</li>
-								<li>工作进度表</li>
-							</ul>
-						</div>
-						<div class="bd">
-							<ul>
-								<table width="100%" class="am-table">
-									<tbody>
-										<tr>
-											<td width="7%" align="center">1</td>
-											<td width="83%">工作进度名称</td>
-											<td width="10%" align="center"><a href="#">10%</a></td>
-										</tr>
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-
-										<tr>
-											<td align="center">1</td>
-											<td>工作进度名称</td>
-											<td align="center"><a href="#">10%</a></td>
-										</tr>
-
-
-
-
-
-
-
-
-									</tbody>
-								</table>
-							</ul>
-							<ul>
-								<table class="am-table">
-									<tbody>
-										<tr>
-											<td>普卡</td>
-											<td>普卡</td>
-											<td><a href="#">4534</a></td>
-											<td>+20</td>
-											<td>4534</td>
-										</tr>
-										<tr>
-											<td>银卡</td>
-											<td>银卡</td>
-											<td>4534</td>
-											<td>+2</td>
-											<td>4534</td>
-										</tr>
-										<tr>
-											<td>金卡</td>
-											<td>金卡</td>
-											<td>4534</td>
-											<td>+10</td>
-											<td>4534</td>
-										</tr>
-										<tr>
-											<td>钻卡</td>
-											<td>钻卡</td>
-											<td>4534</td>
-											<td>+50</td>
-											<td>4534</td>
-										</tr>
-										<tr>
-											<td>合计</td>
-											<td>合计</td>
-											<td>4534</td>
-											<td>+50</td>
-											<td>4534</td>
-										</tr>
-									</tbody>
-								</table>
-							</ul>
-						</div>
-					</div>
+				<div id="main" class="admin-biaoge">
+					<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+					<div id="left"></div>
+					<div id="right"></div>
+					<div id="uleft"></div>
+					
 					<script type="text/javascript">
-						jQuery(".slideTxtBox").slide();
+					getReportData();
 					</script>
-
-
-
-
-
-
-
-
 				</div>
 
-				<div class="foods">
-					<ul>版权所有@2015
-					</ul>
-					<dl>
-						<a href="" title="返回头部" class="am-icon-btn am-icon-arrow-up"></a>
-					</dl>
-
-
-
+				<div class="foods" style="margin-top:50px;">
+					<jsp:include page="/adminjsps/include/footer.jsp" />
 				</div>
-
-
-
-
-
-
 
 			</div>
 
 		</div>
 
-
-
-
 	</div>
 
-	<!--[if lt IE 9]>
-<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
-<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-<script src="assets/js/polyfill/rem.min.js"></script>
-<script src="assets/js/polyfill/respond.min.js"></script>
-<script src="assets/js/amazeui.legacy.js"></script>
-<![endif]-->
-
-	<!--[if (gte IE 9)|!(IE)]><!-->
 	<script src="assets/js/amazeui.min.js"></script>
-	<!--<![endif]-->
-
-
 
 </body>
 </html>

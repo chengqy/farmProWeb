@@ -27,4 +27,21 @@ public interface CartItemMapper {
     int updateByPrimaryKeySelective(CartItem record);
 
     int updateByPrimaryKey(CartItem record);
+
+    /**
+     * 查询购物车条目
+     * @param proId
+     * @param uid
+     * @return
+     */
+	CartItem selectOne(@Param("proId")String proId, @Param("uid")String uid);
+
+	void delete(@Param("proIds")String[] proIds, @Param("uid")String uid);
+
+	/**
+	 * 查询购物车条目数量
+	 * @param uid
+	 * @return
+	 */
+	Integer getCount(@Param("uid")String uid);
 }

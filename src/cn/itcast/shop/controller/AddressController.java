@@ -18,6 +18,7 @@ import cn.itcast.shop.pojo.User;
 import cn.itcast.shop.service.IAddressService;
 import cn.itcast.shop.service.ICityService;
 import cn.itcast.shop.service.IProvinceService;
+import cn.itcast.shop.utils.MyStringUtils;
 
 @RequestMapping("/address")
 @Controller

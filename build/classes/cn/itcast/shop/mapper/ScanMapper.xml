@@ -210,7 +210,12 @@
   </update>
   
   <select id="getScan" resultMap="BaseResultMap">
-  	select * from scan where deleted=0 and uid=#{uid} and pro_id=#{proId}
+  	select * from scan where deleted=0 and uid=#{uid}
   	order by create_time desc limit 1
+  </select>
+  
+  <select id="getListByUid" resultMap="BaseResultMap">
+  	select * from scan where deleted=0 and uid=#{uid}
+  	order by create_time desc
   </select>
 </mapper>

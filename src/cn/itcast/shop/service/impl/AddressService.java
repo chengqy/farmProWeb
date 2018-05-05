@@ -17,7 +17,9 @@ import cn.itcast.shop.pojo.AddressExample;
 import cn.itcast.shop.pojo.AddressParam;
 import cn.itcast.shop.service.IAddressService;
 import cn.itcast.shop.service.ICityService;
+import cn.itcast.shop.service.IOrderItemService;
 import cn.itcast.shop.service.IProvinceService;
+import cn.itcast.shop.utils.MyStringUtils;
 import cn.itcast.shop.utils.UUIDUtils;
 
 @Service
@@ -29,6 +31,8 @@ public class AddressService implements IAddressService {
 	private IProvinceService provinceService;
 	@Autowired
 	private ICityService cityService;
+	@Autowired
+	private IOrderItemService orderItemService;
 
 	@Override
 	public boolean IsAddressStatusTrue(String uid) {
@@ -44,8 +48,12 @@ public class AddressService implements IAddressService {
 
 	@Override
 	public List<Address> getList(String uid) {
-
-		return addressMapper.getList(uid);
+		List<Address> result=addressMapper.getList(uid);
+		for(Address addr:result){
+			addr.setPhone(MyStringUtils.encrypt(addr.getPhone()));
+		}
+		
+		return result;
 	}
 
 	@Override

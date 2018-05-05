@@ -9,18 +9,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.itcast.shop.ENUM.OrderStateEnum;
 import cn.itcast.shop.exception.MyException;
+import cn.itcast.shop.mapper.OrderItemMapper;
+import cn.itcast.shop.mapper.OrdersMapper;
+import cn.itcast.shop.mapper.ProductMapper;
 import cn.itcast.shop.mapper.UserMapper;
+import cn.itcast.shop.pojo.PersonInit;
 import cn.itcast.shop.pojo.User;
 import cn.itcast.shop.pojo.UserParam;
 import cn.itcast.shop.service.IUserService;
 import cn.itcast.shop.utils.MyRandomUtils;
+import cn.itcast.shop.utils.MyStringUtils;
 
 @Service
 public class UserService implements IUserService {
 
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private OrdersMapper orderMapper;
+	@Autowired
+	private MyCollectionService myCollectionService;
+	@Autowired
+	private OrderItemMapper orderItemMapper;
+	@Autowired
+	private ProductMapper productMapper;
+
 
 	@Override
 	public User login(UserParam param) throws Exception {
@@ -62,8 +77,26 @@ public class UserService implements IUserService {
 	@Transactional
 	@Override
 	public int update( User user,HttpSession session) {
+		int rs=userMapper.updateByPrimaryKey(user);
 		session.setAttribute("loginSession", user);
-		return userMapper.updateByPrimaryKey(user);
+		return rs;
+	}
+
+	@Override
+	public PersonInit personInit(String uid) {
+		PersonInit result=new PersonInit();
+		//待付款订单数量
+		result.setPayCount(orderMapper.getStateCount(uid,OrderStateEnum.待付款.code()));
+		//待发货订单数量
+		result.setSendCount(orderMapper.getStateCount(uid,OrderStateEnum.待发货.code()));
+		//待收货订单数量
+		result.setConfirmCount(orderMapper.getStateCount(uid,OrderStateEnum.待收货.code()));
+		//收藏列表
+		result.setCollection(myCollectionService.getList(uid,8));
+		//热卖商品
+		String proId=orderItemMapper.getHot();
+		result.setHot(productMapper.selectByPrimaryKey(proId));
+		return result;
 	}
 
 }

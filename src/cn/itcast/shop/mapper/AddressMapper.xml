@@ -2,14 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.itcast.shop.mapper.AddressMapper" >
   <resultMap id="BaseResultMap" type="cn.itcast.shop.pojo.Address" >
-    <id column="id" property="id" jdbcType="VARCHAR" />
+    <id column="id" property="id" jdbcType="CHAR" />
     <result column="province" property="province" jdbcType="VARCHAR" />
     <result column="city" property="city" jdbcType="VARCHAR" />
-    <result column="zone" property="zone" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="CHAR" />
     <result column="receiver" property="receiver" jdbcType="CHAR" />
     <result column="phone" property="phone" jdbcType="CHAR" />
-    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="BIT" />
     <result column="deleted" property="deleted" jdbcType="BIT" />
@@ -73,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, province, city, zone, address, receiver, phone, uid, create_time, status, deleted
+    id, province, city, address, receiver, phone, uid, create_time, status, deleted
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.itcast.shop.pojo.AddressExample" >
     select
@@ -93,11 +92,11 @@
     select 
     <include refid="Base_Column_List" />
     from address
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from address
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
   </delete>
   <delete id="deleteByExample" parameterType="cn.itcast.shop.pojo.AddressExample" >
     delete from address
@@ -107,13 +106,13 @@
   </delete>
   <insert id="insert" parameterType="cn.itcast.shop.pojo.Address" >
     insert into address (id, province, city, 
-      zone, address, receiver, 
-      phone, uid, create_time, 
-      status, deleted)
-    values (#{id,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
-      #{zone,jdbcType=VARCHAR}, #{address,jdbcType=CHAR}, #{receiver,jdbcType=CHAR}, 
-      #{phone,jdbcType=CHAR}, #{uid,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=BIT}, #{deleted,jdbcType=BIT})
+      address, receiver, phone, uid, 
+      create_time, status, deleted
+      )
+    values (#{id,jdbcType=CHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{address,jdbcType=CHAR}, #{receiver,jdbcType=CHAR}, #{phone,jdbcType=CHAR}, #{uid,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT}, #{deleted,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.itcast.shop.pojo.Address" >
     insert into address
@@ -126,9 +125,6 @@
       </if>
       <if test="city != null" >
         city,
-      </if>
-      <if test="zone != null" >
-        zone,
       </if>
       <if test="address != null" >
         address,
@@ -154,16 +150,13 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=CHAR},
       </if>
       <if test="province != null" >
         #{province,jdbcType=VARCHAR},
       </if>
       <if test="city != null" >
         #{city,jdbcType=VARCHAR},
-      </if>
-      <if test="zone != null" >
-        #{zone,jdbcType=VARCHAR},
       </if>
       <if test="address != null" >
         #{address,jdbcType=CHAR},
@@ -175,7 +168,7 @@
         #{phone,jdbcType=CHAR},
       </if>
       <if test="uid != null" >
-        #{uid,jdbcType=VARCHAR},
+        #{uid,jdbcType=CHAR},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -198,16 +191,13 @@
     update address
     <set >
       <if test="record.id != null" >
-        id = #{record.id,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=CHAR},
       </if>
       <if test="record.province != null" >
         province = #{record.province,jdbcType=VARCHAR},
       </if>
       <if test="record.city != null" >
         city = #{record.city,jdbcType=VARCHAR},
-      </if>
-      <if test="record.zone != null" >
-        zone = #{record.zone,jdbcType=VARCHAR},
       </if>
       <if test="record.address != null" >
         address = #{record.address,jdbcType=CHAR},
@@ -219,7 +209,7 @@
         phone = #{record.phone,jdbcType=CHAR},
       </if>
       <if test="record.uid != null" >
-        uid = #{record.uid,jdbcType=VARCHAR},
+        uid = #{record.uid,jdbcType=CHAR},
       </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -237,14 +227,13 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update address
-    set id = #{record.id,jdbcType=VARCHAR},
+    set id = #{record.id,jdbcType=CHAR},
       province = #{record.province,jdbcType=VARCHAR},
       city = #{record.city,jdbcType=VARCHAR},
-      zone = #{record.zone,jdbcType=VARCHAR},
       address = #{record.address,jdbcType=CHAR},
       receiver = #{record.receiver,jdbcType=CHAR},
       phone = #{record.phone,jdbcType=CHAR},
-      uid = #{record.uid,jdbcType=VARCHAR},
+      uid = #{record.uid,jdbcType=CHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       status = #{record.status,jdbcType=BIT},
       deleted = #{record.deleted,jdbcType=BIT}
@@ -261,9 +250,6 @@
       <if test="city != null" >
         city = #{city,jdbcType=VARCHAR},
       </if>
-      <if test="zone != null" >
-        zone = #{zone,jdbcType=VARCHAR},
-      </if>
       <if test="address != null" >
         address = #{address,jdbcType=CHAR},
       </if>
@@ -274,7 +260,7 @@
         phone = #{phone,jdbcType=CHAR},
       </if>
       <if test="uid != null" >
-        uid = #{uid,jdbcType=VARCHAR},
+        uid = #{uid,jdbcType=CHAR},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -286,22 +272,22 @@
         deleted = #{deleted,jdbcType=BIT},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.itcast.shop.pojo.Address" >
     update address
     set province = #{province,jdbcType=VARCHAR},
       city = #{city,jdbcType=VARCHAR},
-      zone = #{zone,jdbcType=VARCHAR},
       address = #{address,jdbcType=CHAR},
       receiver = #{receiver,jdbcType=CHAR},
       phone = #{phone,jdbcType=CHAR},
-      uid = #{uid,jdbcType=VARCHAR},
+      uid = #{uid,jdbcType=CHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIT},
       deleted = #{deleted,jdbcType=BIT}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
   </update>
+  
   <update id="changeAllStatus">
   	update address set status=false
   	<if test="uid!=null">

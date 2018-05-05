@@ -3,6 +3,8 @@ package cn.itcast.shop.mapper;
 import cn.itcast.shop.pojo.ProPagingParam;
 import cn.itcast.shop.pojo.Product;
 import cn.itcast.shop.pojo.ProductExample;
+
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -64,4 +66,29 @@ public interface ProductMapper {
 	 * @return
 	 */
 	int getCount(ProPagingParam param);
+
+	/**
+	 * 修改库存
+	 * @param proId 农产品ID
+	 * @param amount 修改数量
+	 * @param status 0.减 1.加
+	 */
+	void updateStock(@Param("proId")String proId, @Param("amount")Integer amount,@Param("status")Integer status);
+
+	/**
+	 * 根据所有商品条目查询卖家ID
+	 * @param proIds
+	 * @return
+	 */
+	List<String> getSellerList(@Param("proIds")String[] proIds);
+
+	/**
+	 * 删除商品
+	 * @param proIds
+	 * @param sellerId
+	 */
+	void deleted(@Param("proIds")String[] proIds, @Param("sellerId")String sellerId);
+
+	void changeStatus(@Param("proIds")String[] proIds, @Param("sellerId")String sellerId, @Param("status")int status);
+
 }

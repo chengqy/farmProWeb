@@ -212,4 +212,11 @@
   <select id="getCollect" resultMap="BaseResultMap">
   	select * from my_collection where pro_id=#{proId} and uid=#{uid}
   </select>
+  <select id="getListByUid" resultMap="BaseResultMap">
+  	select * from my_collection where deleted=false and uid=#{uid}
+  	order by create_time desc
+  	<if test="limit != null" >
+       limit ${limit}
+      </if>
+  </select>
 </mapper>
